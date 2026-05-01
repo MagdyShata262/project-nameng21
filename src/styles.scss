@@ -2,7 +2,7 @@
 
 @include mat.core();
 
-// Define a light theme
+// Light Theme Palettes
 $light-theme: mat.define-theme((
   color: (
     theme-type: light,
@@ -18,7 +18,7 @@ $light-theme: mat.define-theme((
   )
 ));
 
-// Define a dark theme
+// Dark Theme Palettes
 $dark-theme: mat.define-theme((
   color: (
     theme-type: dark,
@@ -34,20 +34,64 @@ $dark-theme: mat.define-theme((
   )
 ));
 
-// Default styles
+// Apply the light theme by default
 html {
   @include mat.all-component-themes($light-theme);
   height: 100%;
+  transition: background-color 0.3s ease;
 }
 
-// Dark theme class
+// Apply the dark theme class
 .dark-theme {
   @include mat.all-component-colors($dark-theme);
-  background-color: #303030;
-  color: white;
+  background-color: #121212; // Deeper dark for M3 feel
+  color: #e0e0e0;
+
+  // Ensure bootstrap cards and other elements respect the dark mode
+  .card {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+  }
+  
+  .bg-light {
+    background-color: #1a1a1a !important;
+  }
+
+  .text-muted {
+    color: #aaa !important;
+  }
+
+  .offcanvas {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+
+  .btn-outline-secondary {
+    color: #ccc;
+    border-color: #444;
+    &:hover {
+      background-color: #333;
+    }
+  }
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+}
+
+// Global Material Helpers
+.text-primary { color: mat.get-theme-color($light-theme, primary) !important; }
+.text-tertiary { color: mat.get-theme-color($light-theme, tertiary) !important; }
+
+.dark-theme {
+  .text-primary { color: mat.get-theme-color($dark-theme, primary) !important; }
+  .text-tertiary { color: mat.get-theme-color($dark-theme, tertiary) !important; }
+}
+
+// Smooth transitions for theme switching
+* {
+  transition: background-color 0.2s ease, color 0.1s ease, border-color 0.2s ease;
 }

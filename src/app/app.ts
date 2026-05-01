@@ -1,13 +1,13 @@
 import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService } from './theme.service';
+import { NavbarComponent } from './navbar/navbar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatButtonModule, MatToolbarModule, MatIconModule],
+  imports: [RouterOutlet, MatButtonModule, MatIconModule, NavbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
