@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ViewChild, ElementRef } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,8 +6,8 @@ import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-navbar',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav 
       class="navbar navbar-expand-lg fixed-top shadow-sm transition-all" 
@@ -115,12 +115,19 @@ import { ThemeService } from '../theme.service';
 })
 export class NavbarComponent {
   protected readonly themeService = inject(ThemeService);
-  @ViewChild('offcanvas') offcanvasElement!: ElementRef;
+  @ViewChild('offcanvas') offcanvasElement!: ElementRef<HTMLDivElement>;
 
   closeOffcanvas() {
-    const bootstrap = (window as any).bootstrap;
-    if (bootstrap) {
-      const offcanvasInstance = bootstrap.Offcanvas.getInstance(this.offcanvasElement.nativeElement);
+    const currentWindow = window as Window & {
+      bootstrap?: {
+        Offcanvas: {
+          getInstance(element: Element): { hide(): void } | null;
+        };
+      };
+    };
+
+    if (currentWindow.bootstrap) {
+      const offcanvasInstance = currentWindow.bootstrap.Offcanvas.getInstance(this.offcanvasElement.nativeElement);
       if (offcanvasInstance) {
         offcanvasInstance.hide();
       }

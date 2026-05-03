@@ -2,76 +2,79 @@
 
 @include mat.core();
 
-// Light Theme Palettes
+// Define a common typography and density configuration
+$typography: (
+  brand-family: 'Roboto, sans-serif',
+  plain-family: 'Roboto, sans-serif',
+);
+
+$density: (
+  scale: 0
+);
+
+// Light theme configuration
 $light-theme: mat.define-theme((
   color: (
     theme-type: light,
     primary: mat.$azure-palette,
     tertiary: mat.$blue-palette,
   ),
-  typography: (
-    brand-family: 'Roboto, sans-serif',
-    plain-family: 'Roboto, sans-serif',
-  ),
-  density: (
-    scale: 0
-  )
+  typography: $typography,
+  density: $density,
 ));
 
-// Dark Theme Palettes
+// Dark theme configuration
 $dark-theme: mat.define-theme((
   color: (
     theme-type: dark,
     primary: mat.$rose-palette,
     tertiary: mat.$blue-palette,
   ),
-  typography: (
-    brand-family: 'Roboto, sans-serif',
-    plain-family: 'Roboto, sans-serif',
-  ),
-  density: (
-    scale: 0
-  )
+  typography: $typography,
+  density: $density,
 ));
 
-// Apply the light theme by default
 html {
+  // Apply the light theme by default
   @include mat.all-component-themes($light-theme);
+
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
   height: 100%;
-  transition: background-color 0.3s ease;
 }
 
-// Apply the dark theme class
 .dark-theme {
+  // Overwrite with the dark theme
   @include mat.all-component-colors($dark-theme);
-  background-color: #121212; // Deeper dark for M3 feel
-  color: #e0e0e0;
 
-  // Ensure bootstrap cards and other elements respect the dark mode
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+
   .card {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
-    border-color: #333;
+    background-color: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface);
+    border-color: var(--mat-sys-outline-variant);
   }
   
   .bg-light {
-    background-color: #1a1a1a !important;
+    background-color: var(--mat-sys-surface-container-low) !important;
   }
 
   .text-muted {
-    color: #aaa !important;
+    color: var(--mat-sys-on-surface-variant) !important;
   }
 
   .offcanvas {
-    background-color: #1e1e1e;
-    color: #e0e0e0;
+    background-color: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface);
   }
 
   .btn-outline-secondary {
-    color: #ccc;
-    border-color: #444;
+    color: var(--mat-sys-on-surface-variant);
+    border-color: var(--mat-sys-outline);
+
     &:hover {
-      background-color: #333;
+      background-color: var(--mat-sys-surface-container-high);
     }
   }
 }
@@ -83,13 +86,8 @@ body {
 }
 
 // Global Material Helpers
-.text-primary { color: mat.get-theme-color($light-theme, primary) !important; }
-.text-tertiary { color: mat.get-theme-color($light-theme, tertiary) !important; }
-
-.dark-theme {
-  .text-primary { color: mat.get-theme-color($dark-theme, primary) !important; }
-  .text-tertiary { color: mat.get-theme-color($dark-theme, tertiary) !important; }
-}
+.text-primary { color: var(--mat-sys-primary) !important; }
+.text-tertiary { color: var(--mat-sys-tertiary) !important; }
 
 // Smooth transitions for theme switching
 * {
