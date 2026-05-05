@@ -10,11 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ProductComponent } from '../product/product';
 import { ProductsService } from '../product/products.service';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-home',
   imports: [MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, ProductComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.color-scheme]': "themeService.isDarkMode() ? 'dark' : 'light'"
+  },
   template: `
     <section class="products-shell" aria-labelledby="products-title">
       <div class="products-header">
@@ -148,6 +152,7 @@ import { ProductsService } from '../product/products.service';
   ],
 })
 export class HomeComponent {
+  protected readonly themeService = inject(ThemeService);
   protected readonly productsService = inject(ProductsService);
 
   protected readonly productsResource = this.productsService.productsResource;

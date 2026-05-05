@@ -2,14 +2,23 @@ import { CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 import { Product } from './products.service';
 
 @Component({
   selector: 'app-product',
-  imports: [CurrencyPipe, TitleCasePipe, MatChipsModule, MatIconModule],
+  imports: [
+    CurrencyPipe,
+    TitleCasePipe,
+    MatChipsModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterLink,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="product-card">
+    <article class="product-card" [routerLink]="['/product', product().id]">
       <div class="product-media">
         <img
           [src]="product().thumbnail"
@@ -46,6 +55,10 @@ import { Product } from './products.service';
             <mat-chip>{{ tag }}</mat-chip>
           }
         </mat-chip-set>
+
+        <div class="card-actions">
+          <button mat-flat-button color="primary" class="w-100">View Details</button>
+        </div>
       </div>
     </article>
   `,
@@ -54,6 +67,7 @@ import { Product } from './products.service';
       :host {
         display: block;
         min-width: 0;
+        color-scheme: inherit;
       }
 
       .product-card {
@@ -66,6 +80,16 @@ import { Product } from './products.service';
         height: 100%;
         min-width: 0;
         overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          border-color: var(--mat-sys-primary);
+        }
       }
 
       .product-media {
@@ -163,6 +187,14 @@ import { Product } from './products.service';
         font-size: 1rem;
         height: 1rem;
         width: 1rem;
+      }
+
+      .card-actions {
+        margin-top: 1rem;
+      }
+
+      .w-100 {
+        width: 100%;
       }
     `,
   ],

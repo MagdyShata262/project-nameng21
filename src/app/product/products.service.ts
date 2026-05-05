@@ -86,6 +86,25 @@ export class ProductsService {
   }
 
   /**
+   * Fetch a single product by its ID.
+   * @param id The product ID.
+   */
+  getProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Fetch a single product as a resource.
+   * @param id The product ID signal or value.
+   */
+  productResource(id: () => number | undefined) {
+    return httpResource<Product>(() => {
+      const productId = id();
+      return productId ? { url: `${this.apiUrl}/${productId}` } : undefined;
+    });
+  }
+
+  /**
    * Update the search term.
    * @param term The new search query.
    */

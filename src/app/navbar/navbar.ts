@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, ViewChild, ElementRef, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +12,8 @@ import { ThemeService } from '../theme.service';
   template: `
     <nav 
       class="navbar navbar-expand-lg fixed-top shadow-sm transition-all" 
+      [class.navbar-dark]="themeService.isDarkMode()"
+      [class.navbar-light]="!themeService.isDarkMode()"
       [class.bg-navbar-light]="!themeService.isDarkMode()"
       [class.bg-navbar-dark]="themeService.isDarkMode()">
       <div class="container-fluid">
@@ -25,20 +28,24 @@ import { ThemeService } from '../theme.service';
           data-bs-toggle="offcanvas" 
           data-bs-target="#offcanvasNavbar" 
           aria-controls="offcanvasNavbar" 
-          aria-label="Toggle navigation"
-          [attr.data-bs-theme]="themeService.isDarkMode() ? 'dark' : 'light'">
+          aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         
-        <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" #offcanvas>
+        <div 
+          class="offcanvas offcanvas-end border-0" 
+          tabindex="-1" 
+          id="offcanvasNavbar" 
+          aria-labelledby="offcanvasNavbarLabel" 
+          #offcanvas
+          [attr.data-bs-theme]="themeService.isDarkMode() ? 'dark' : 'light'">
           <div class="offcanvas-header border-bottom">
             <h5 class="offcanvas-title fw-bold" id="offcanvasNavbarLabel">Menu</h5>
             <button 
               type="button" 
               class="btn-close shadow-none" 
               data-bs-dismiss="offcanvas" 
-              aria-label="Close"
-              [class.btn-close-white]="themeService.isDarkMode()"></button>
+              aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 mb-4 mb-lg-0">
@@ -72,6 +79,10 @@ import { ThemeService } from '../theme.service';
     </nav>
   `,
   styles: [`
+    :host {
+      display: block;
+      color-scheme: inherit;
+    }
     .transition-all {
       transition: all 0.3s ease-in-out;
     }
@@ -97,7 +108,7 @@ import { ThemeService } from '../theme.service';
         color: var(--mat-sys-on-primary-container) !important;
       }
       &:hover:not(.active) {
-        background-color: rgba(var(--mat-sys-primary-rgb), 0.08);
+        background-color: var(--mat-sys-state-layers-surface-variant-opacity-0-08, rgba(0, 0, 0, 0.08));
       }
     }
     @media (max-width: 991.98px) {
@@ -114,20 +125,18 @@ import { ThemeService } from '../theme.service';
   `]
 })
 export class NavbarComponent {
+  private readonly platformId = inject(PLATFORM_ID);
   protected readonly themeService = inject(ThemeService);
   @ViewChild('offcanvas') offcanvasElement!: ElementRef<HTMLDivElement>;
 
   closeOffcanvas() {
-    const currentWindow = window as Window & {
-      bootstrap?: {
-        Offcanvas: {
-          getInstance(element: Element): { hide(): void } | null;
-        };
-      };
-    };
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
-    if (currentWindow.bootstrap) {
-      const offcanvasInstance = currentWindow.bootstrap.Offcanvas.getInstance(this.offcanvasElement.nativeElement);
+    const bootstrap = (window as any).bootstrap;
+    if (bootstrap?.Offcanvas) {
+      const offcanvasInstance = bootstrap.Offcanvas.getInstance(this.offcanvasElement.nativeElement);
       if (offcanvasInstance) {
         offcanvasInstance.hide();
       }
